@@ -89,13 +89,6 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0
-    functionName: PlayCurrentWeaponAudio
-    data: 
-    objectReferenceParameter: {fileID: 8300000, guid: f4181816d86635544b77fb16a9cf2bda, type: 3}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
   - time: 0.33333334
     functionName: HandleFiringAnimationEnd
     data: 

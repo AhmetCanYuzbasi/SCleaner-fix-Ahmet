@@ -13,7 +13,10 @@ public class BugHealth : MonoBehaviour, IDamageable, IHealth
         }
         if (_damageFlash == null){
             _damageFlash = GetComponent<DamageFlash>();
+
         }
+        FindObjectOfType<GameManager>().EnemyStat();
+
     }
     void Start()
     {
@@ -25,8 +28,8 @@ public class BugHealth : MonoBehaviour, IDamageable, IHealth
         bugStats.health -= amount;
         Debug.Log("Current health " + bugStats.health);
         if(bugStats.health <= 0){
-            
-            Destroy(gameObject);  
+            Destroy(gameObject);
+            FindObjectOfType<GameManager>().KillStat();
         }
     }
 

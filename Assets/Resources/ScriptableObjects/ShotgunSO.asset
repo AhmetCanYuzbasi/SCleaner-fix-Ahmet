@@ -12,18 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f9b895cf14abb4ca2727ed4c5bc8fe, type: 3}
   m_Name: ShotgunSO
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: b968b8789d15f934e8e5e107bb9614cb, type: 3}
+  weaponSprite: {fileID: 21300000, guid: b968b8789d15f934e8e5e107bb9614cb, type: 3}
   gunSound: {fileID: 8300000, guid: dc3455dcd0a53ac40b4d021ea0715afb, type: 3}
+  shootAnimation: {fileID: 7400000, guid: 6bb06f4de49f12646802f92f66e5e57e, type: 2}
+  reloadAnimation: {fileID: 0}
   bulletPrefab: {fileID: 6657017082548522162, guid: c77308c80b6609f4eb203a2ff835a4b3, type: 3}
-  type: 0
+  Type: 1
   bulletInfo: {fileID: 11400000, guid: ff4c160dc961a4e48a857227680f539b, type: 2}
   offset: {x: 1.5, y: 0, z: 0}
   weaponName: Shotgun
   damage: 10
-  currentAmmo: 6
-  roundCapacity: 6
+  currentAmmo: 5
+  ammoInClip: 6
   maxReserveAmmo: 32
-  currentReserveAmmo: 32
+  currentReserveAmmo: 29
   pelletCount: 5
+  lastFireTime: 0.5
+  fireRate: 0.5
   isReloading: 0
   isFiring: 0

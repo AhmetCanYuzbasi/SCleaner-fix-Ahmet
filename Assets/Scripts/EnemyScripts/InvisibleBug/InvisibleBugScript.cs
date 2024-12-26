@@ -31,14 +31,4 @@ public class InvisibleBugScript : MonoBehaviour, IEnemy
     {
         throw new System.NotImplementedException();
     }
-
-    public void PlayerIsDetected()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void PlayerIsOutOfChaseRange()
-    {
-        throw new System.NotImplementedException();
-    }
 }

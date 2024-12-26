@@ -103,24 +103,10 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0
-    functionName: PlayCurrentWeaponAudio
-    data: 
-    objectReferenceParameter: {fileID: 8300000, guid: 5935d7b9914bcd04587948432496d4fd, type: 3}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
   - time: 0.9166667
     functionName: Reload
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.9166667
-    functionName: PlayCurrentWeaponAudio
-    data: 
-    objectReferenceParameter: {fileID: 8300000, guid: 87903a46f9b12a84da3577703f985e74, type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

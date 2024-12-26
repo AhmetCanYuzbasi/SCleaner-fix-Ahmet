@@ -1,19 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+//using UnityEditor.Animations;
 
 public class Shotgun : MonoBehaviour, IWeapon
 {
+    
     public WeaponSO WeaponInfo { get; set; }
-    private BulletSO bulletInfo;
-    [SerializeField] private Transform firingPoint;
-    List<Bullet> bullets = new List<Bullet>();
-    bool _hasReloadStarted;
+    [SerializeField] BulletSO bulletInfo;
+    [SerializeField] Transform firingPoint;
     [SerializeField] Animator _animator;
-    [SerializeField] RuntimeAnimatorController _runtimeAnimatorController;
-    
-    
+    List<Bullet> bullets = new List<Bullet>();
+    bool hasReloadStarted = false;
 
+
+    
     void OnEnable()
     {
         Bullet.OnBulletDestroyed += HandleBulletDestroyed;
@@ -50,27 +52,27 @@ public class Shotgun : MonoBehaviour, IWeapon
             Debug.Log("FiringPoint not assigned. Finding...");
             firingPoint = transform.Find("FiringPoint");    
         }
+    }
+
+    void Start(){
         
         if (!_animator){
             _animator = GetComponent<Animator>();
         }
+        WeaponInfo.lastFireTime = WeaponInfo.fireRate;
+    }
 
-        if (_animator.runtimeAnimatorController){
-            print("Runtime animator controller is null, fetching.");
-            _runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("AnimatorControllers/Shotgun_AC");
-            _animator.runtimeAnimatorController = _runtimeAnimatorController;
+    void Update(){
+
+        if (!HasAmmo() && WeaponInfo.currentReserveAmmo != 0 && !WeaponInfo.isReloading){
+            HandleReloadStart();
         }
-        WeaponInfo.Init();
-    }
 
-    public void ReceiveFiringPoint(Transform firingPoint){
-        this.firingPoint = firingPoint;
     }
-
+    
     public void PrimaryAttack()
     {
         
-        int k = 1;
         for (int i = 1; i <= WeaponInfo.pelletCount; ++i){
             Bullet bullet;
             float offset;
@@ -87,21 +89,20 @@ public class Shotgun : MonoBehaviour, IWeapon
             else{
             offset = (WeaponInfo.pelletCount - i + 1) * 5f;
             bullet = Instantiate(WeaponInfo.bulletPrefab, firingPoint.transform.position, Quaternion.Euler(0, 0, firingPoint.rotation.eulerAngles.z - offset)).GetComponent<Bullet>();
-            ++k;
             }
 
             bullet.enabled = false;
             if (bullet != null){
-                Debug.Log(bulletInfo.lifeTime);
                 bullet.SetupBulletParameters(bulletInfo.projectileSpeed, bulletInfo.size, WeaponInfo.damage, bulletInfo.lifeTime);
                 bullets.Add(bullet);
-            }  
+            }
         } 
 
         foreach(Bullet bullet in bullets){
             bullet.enabled = true;
         } 
 
+        --WeaponInfo.currentAmmo;
         
     }
 
@@ -110,6 +111,9 @@ public class Shotgun : MonoBehaviour, IWeapon
         //no op
     }
 
+    public bool CanFire(){
+        return WeaponInfo.fireRate <= Time.time - WeaponInfo.lastFireTime;
+    }
     
     public bool HasAmmo(){
         if (WeaponInfo.currentAmmo == 0){
@@ -124,7 +128,7 @@ public class Shotgun : MonoBehaviour, IWeapon
         ++WeaponInfo.currentAmmo;
         --WeaponInfo.currentReserveAmmo;
         
-        if(WeaponInfo.currentAmmo < WeaponInfo.roundCapacity){
+        if(WeaponInfo.currentAmmo < WeaponInfo.ammoInClip){
             _animator.SetTrigger("ReloadLoopTrigger");
             return;
         }
@@ -135,8 +139,8 @@ public class Shotgun : MonoBehaviour, IWeapon
 
         if(!HasAmmo()) return;
         
-        if(_hasReloadStarted && HasAmmo() || WeaponInfo.isReloading && HasAmmo()){
-            _hasReloadStarted = false;
+        if(hasReloadStarted && HasAmmo() || WeaponInfo.isReloading && HasAmmo()){
+            hasReloadStarted = false;
             WeaponInfo.isReloading = false;
             _animator.SetBool("hasReloadStarted", false);
             _animator.ResetTrigger("ReloadLoopTrigger");
@@ -157,14 +161,14 @@ public class Shotgun : MonoBehaviour, IWeapon
 
     public void HandleReloadStart()
     {
-        if(WeaponInfo.currentReserveAmmo == 0 || WeaponInfo.currentAmmo == WeaponInfo.roundCapacity || WeaponInfo.isReloading) 
+        if(WeaponInfo.currentReserveAmmo == 0 || WeaponInfo.currentAmmo == WeaponInfo.ammoInClip || WeaponInfo.isReloading) 
         return;
         
         WeaponInfo.isFiring = false;
         _animator.SetBool("isFiring", false);
 
         _animator.SetBool("hasReloaded", false);
-        _hasReloadStarted = true;
+        hasReloadStarted = true;
         _animator.SetBool("hasReloadStarted", true);
        
     }
@@ -188,31 +192,5 @@ public class Shotgun : MonoBehaviour, IWeapon
         WeaponInfo.isReloading = false;
         _animator.SetBool("isReloading", false);
         _animator.SetBool("hasReloaded", true);
-    }
-
-    public void HandleSecondaryAttackInput()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void HandleSecondaryAttackInputCancel()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ResetWeaponState(){
-        WeaponInfo.isFiring = false;
-        WeaponInfo.isReloading = false;
-        _animator.SetBool("isFiring", false);
-        _animator.SetBool("isReloading", false);
-        _animator.SetBool("hasReloadStarted", false);
-        _animator.SetBool("hasReloaded", false);
-        _animator.ResetTrigger("ReloadTrigger");
-        _animator.ResetTrigger("ReloadLoopTrigger");
-        _animator.ResetTrigger("ReloadCancelTrigger");
-        //_animator.Play("Idle");
-        _animator.SetTrigger("WeaponSwitchTrigger");
-        GetComponent<SpriteRenderer>().sprite = WeaponInfo.sprite;
-        
     }
 }

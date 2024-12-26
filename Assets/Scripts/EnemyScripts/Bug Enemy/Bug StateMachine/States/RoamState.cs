@@ -5,8 +5,6 @@ using UnityEngine.AI;
 
 public class RoamState : BaseState
 {
-
-    //float range = 10f;
     Transform centrePoint;
     BoxCollider2D spawnArea;
     BoundPositions areaBounds;

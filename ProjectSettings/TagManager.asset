@@ -10,8 +10,6 @@ TagManager:
   - Ground
   - Spawn Area
   - GrenadeSpawnPoint
-  - PlayerHitbox
-  - EnemyHitbox
   layers:
   - Default
   - TransparentFX

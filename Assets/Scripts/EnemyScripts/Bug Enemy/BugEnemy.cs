@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,20 +15,20 @@ public class BugEnemy : MonoBehaviour, IEnemy
     BoxCollider2D _spawnArea;
     UnitBoolsSO infoSO;
     UnitInfoSO _playerInfo;
-    GameObject _groundObject;
+    
 
     void Awake(){
         if (infoSO == null){
             infoSO = ScriptableObject.CreateInstance<UnitBoolsSO>();
         }
-    }        
+    }
 
     void Start()
     {
 
         //Initialize fields
         string description1 = "roam to stop predicate";
-        //string description2 = "stop to roam predicate";
+        string description2 = "stop to roam predicate";
         infoSO.Init();
 
 
@@ -35,15 +36,9 @@ public class BugEnemy : MonoBehaviour, IEnemy
         _stateMachine = new StateMachine();
         _rb2D = GetComponent<Rigidbody2D>();
         _player = GameObject.FindGameObjectWithTag("Player");
-        _playerInfo = _player.GetComponent<PlayerMain>().playerInfo;
-
-        _groundObject = GameObject.FindGameObjectWithTag("Ground");
-        _groundTransform = _groundObject.transform;
-        _spawnArea = _groundObject.GetComponent<BoxCollider2D>();    
-
-        print(_groundObject);
+        _playerInfo = _player.GetComponent<PlayerMain>().playerInfo;        
         //_groundTransform = GameObject.FindGameObjectWithTag("Ground").GetComponent<Transform>();
-        //_spawnArea = GameObject.FindGameObjectWithTag("Spawn Area").GetComponent<BoxCollider2D>();
+        _spawnArea = GameObject.FindGameObjectWithTag("Spawn Area").GetComponent<BoxCollider2D>();
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
         _agent.updateUpAxis = false;
@@ -51,19 +46,25 @@ public class BugEnemy : MonoBehaviour, IEnemy
 
 
         //Initialize states
+        //RoamState roamState = new RoamState(this, _player, _rb2D);
         RoamState roamState = new RoamState(this, _player, _rb2D, _agent, _groundTransform, _spawnArea);
-        //ChaseState chaseState = new ChaseState(this, _player, _rb2D, _agent);
-
+        ChaseState chaseState = new ChaseState(this, _player, _rb2D, _agent);
+        //ChaseState chaseState = new ChaseState(this, _player, _rb2D);
+        //AttackState attackState = new AttackState(this, _player, _rb2D);
         
         //Initialize transitions
         
         
-        //At(roamState, chaseState, new FuncPredicate( () => infoSO.playerDetected, description1));
-        //At(chaseState, roamState, new FuncPredicate( () => !infoSO.playerDetected, description2));
+        At(roamState, chaseState, new FuncPredicate( () => infoSO.playerDetected, description1));
+        At(chaseState, roamState, new FuncPredicate( () => !infoSO.playerDetected, description2));
+        //At(attackState, chaseState, new FuncPredicate( () => !playerInAttackRange));
 
-        //At(roamState, chaseState, new FuncPredicate( () => infoSO.hasBeenAttacked));
+        At(roamState, chaseState, new FuncPredicate( () => infoSO.hasBeenAttacked ));
 
         Any(roamState, new FuncPredicate(() => !_playerInfo.isAlive, "player is dead!"));
+        //Any(attackState, new FuncPredicate( () => playerInAttackRange));
+        //Any(roamState, new FuncPredicate(() => playerDetected));
+        //Any(stopState, new FuncPredicate(() => !playerDetected));
 
 
         //Set initial state
@@ -97,7 +98,12 @@ public class BugEnemy : MonoBehaviour, IEnemy
         //no op
     }
 
-    public void SplashSlime()
+    public void SpecialAbility()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SpecialAbility(PlayerMovement playerMovement)
     {
         throw new NotImplementedException();
     }

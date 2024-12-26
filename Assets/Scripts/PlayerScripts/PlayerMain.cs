@@ -39,7 +39,6 @@ public class PlayerMain : MonoBehaviour
         playerDash.Init(playerInfo);
 
         weaponManager.ReceivePrimaryAttackInputAction(playerActionMap.FindAction("Shooting"));
-        weaponManager.ReceiveSecondaryAttackInputAction(playerActionMap.FindAction("Secondary Shooting"));
 
 
     }

@@ -8,12 +8,15 @@ public class SeetingsMenu : MonoBehaviour
 {
     public AudioMixer audioMixer;
 
+    [SerializeField] Slider VolumeSlider;
+
     public Dropdown resolutionDropdown;
 
     Resolution[] resolutions;
 
-    private void Start()
+    public void Start()
     {
+
         QualitySettings.SetQualityLevel(2);
 
         resolutions = Screen.resolutions;
@@ -25,10 +28,12 @@ public class SeetingsMenu : MonoBehaviour
         int currentResolutionIndex = 0;
 
         for (int i = 0; i < resolutions.Length; i++)
-        {
-            string option = resolutions[i] + "X" + resolutions[i].height;
-            options.Add(option);
-
+        {   
+            
+                string option = resolutions[i] + "X" + resolutions[i].height;
+                options.Add(option);
+            
+            
             if (resolutions[i].width == Screen.currentResolution.width &&
                 resolutions[i].height == Screen.currentResolution.height)
             {
@@ -47,10 +52,12 @@ public class SeetingsMenu : MonoBehaviour
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
-    public void SetVolume(float volume)
+    public void SetVolume()
     {
-        audioMixer.SetFloat("volume", volume);
+        AudioListener.volume = VolumeSlider.value;
     }
+
+ 
 
     public void SetQuality (int qualityIndex)
     {

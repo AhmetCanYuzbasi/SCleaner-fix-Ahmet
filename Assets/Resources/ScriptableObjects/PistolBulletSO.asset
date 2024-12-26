@@ -12,7 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2085b6b8c1b3f24b9a38c26693cfe32, type: 3}
   m_Name: PistolBulletSO
   m_EditorClassIdentifier: 
-  bulletType: 0
-  projectileSpeed: 10
+  projectileSpeed: 5
   size: 1
-  lifeTime: 5

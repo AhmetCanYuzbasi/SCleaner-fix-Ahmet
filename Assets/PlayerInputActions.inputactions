@@ -33,15 +33,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Secondary Shooting",
-                    "type": "Button",
-                    "id": "1f141dfa-f26e-4d2a-add9-161b5a687b4f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Dash",
                     "type": "Button",
                     "id": "715679a7-3480-4422-8ff7-6537c907ec3d",
@@ -51,9 +42,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Equipment",
+                    "name": "Switch Weapons",
                     "type": "Button",
-                    "id": "f31edf2f-77da-4c7d-8346-36650ea0816b",
+                    "id": "581b16fc-a9a2-4e00-8305-6658add7fb4a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -62,16 +53,16 @@
                 {
                     "name": "Reload",
                     "type": "Button",
-                    "id": "4f29a2a7-eebb-43d2-953f-8b58b4e61d9a",
+                    "id": "40fdb4cd-ac4c-46ae-8cdd-830bc4b1ed6b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Switch Weapons",
+                    "name": "Equipment",
                     "type": "Button",
-                    "id": "5fd72f26-8912-4ce2-a9cf-184d2716c7fb",
+                    "id": "fa92b225-38f7-4f50-8884-cc3693d6f29a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -170,7 +161,7 @@
                 {
                     "name": "",
                     "id": "fa5bc939-3e9c-4868-bfe1-70f8427e82d6",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -197,50 +188,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Equipment",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2c69e7d4-c2b7-4ec9-96c7-fcfc85d71da3",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Secondary Shooting",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "240f5ab2-0706-4c5b-99f5-152a179f722f",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Switch Weapons",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d32e02ee-8d73-4975-b8f7-8b44bd58d485",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Switch Weapons",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a230ab49-f4ff-46a7-b262-1112a547afe6",
-                    "path": "<Keyboard>/4",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Switch Weapons",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

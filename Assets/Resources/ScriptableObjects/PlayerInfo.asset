@@ -12,12 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbdb02a2cd891364391bdbef2bde7280, type: 3}
   m_Name: PlayerInfo
   m_EditorClassIdentifier: 
-  OnHitSFX: {fileID: 8300000, guid: d57572f40b4d87141aabdde4729eb3a0, type: 3}
-  OnDefeatSFX: {fileID: 8300000, guid: ef36cc8f7c1dd90479e81af2483c7415, type: 3}
-  DashSFX: {fileID: 8300000, guid: 534772b67dbbaee48b9720fbfd2dfb54, type: 3}
-  DefeatSprite: {fileID: 21300000, guid: 83bcf7a8d2f11ec498a4f3b0b26a8e09, type: 3}
-  health: 50
-  maxHealth: 50
+  health: 15
+  maxHealth: 15
   movementSpeed: 5
   maxMovementSpeed: 5
   isAlive: 1

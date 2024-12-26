@@ -1,32 +1,30 @@
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 
 [CreateAssetMenu(fileName = "WeaponInfoSO", menuName = "ScriptableObjects/Weapon Info")]
 public class WeaponSO : ScriptableObject
 {
-    public Sprite sprite;
+    public Sprite weaponSprite;
     public AudioClip gunSound;
+    public AnimationClip shootAnimation;
+    public AnimationClip reloadAnimation;
     public GameObject bulletPrefab;
-    public WeaponType type;
+    public WeaponType Type;
     public BulletSO bulletInfo;
-    public Vector3 offset = new(0, 0, 0);
+    public Vector3 offset = Vector3.zero;
     public string weaponName;
     public int damage;
     public int currentAmmo;
-    public int roundCapacity;
+    public int ammoInClip;
     public int maxReserveAmmo;
     public int currentReserveAmmo;
     public int pelletCount;
+    public float lastFireTime;
+    public float fireRate;
     public bool isReloading;
     public bool isFiring;
 
-    public void Init(){
-        Debug.Log("called init for weapons");
-        currentAmmo = roundCapacity;
-        currentReserveAmmo = maxReserveAmmo;
-        isReloading = false;
-        isFiring = false;
-    }
+
 
     public enum WeaponType{
     MELEE,

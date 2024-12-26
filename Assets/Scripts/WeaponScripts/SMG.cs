@@ -8,7 +8,6 @@ public class SMG : MonoBehaviour, IWeapon
     [SerializeField] BulletSO bulletInfo;
     [SerializeField] Transform firingPoint;
     [SerializeField] Animator _animator;
-    [SerializeField] RuntimeAnimatorController _runtimeAnimatorController;
 
     void Awake(){
         if (WeaponInfo == null){
@@ -31,19 +30,14 @@ public class SMG : MonoBehaviour, IWeapon
             Debug.Log("FiringPoint not assigned. Finding...");
             print(firingPoint.transform.position.x + "    " + firingPoint.transform.position.y);
         }
-
-        if (_animator.runtimeAnimatorController){
-            print("Runtime animator controller is null, fetching.");
-            _runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("AnimatorControllers/SMG_AC");
-            _animator.runtimeAnimatorController = _runtimeAnimatorController;
-        }
-        WeaponInfo.Init();
     }
 
     void Start(){
+        //GetComponent<SpriteRenderer>().sprite = WeaponInfo.weaponSprite;
         if (!_animator){
             _animator = GetComponent<Animator>();
         }
+        WeaponInfo.lastFireTime = WeaponInfo.fireRate;
         //PlayWeaponSounds.ReceiveAudioSource(GetComponent<AudioSource>());
     }
 
@@ -54,21 +48,22 @@ public class SMG : MonoBehaviour, IWeapon
         }
     }
 
-    public void ReceiveFiringPoint(Transform firingPoint){
-        this.firingPoint = firingPoint;
-    }
-
     public void PrimaryAttack(){
         print("called");
-        if (!HasAmmo() || WeaponInfo.isReloading) return;
+        if (!HasAmmo() || WeaponInfo.isReloading || !CanFire()) return;
 
         Bullet instantiatedBullet = Instantiate(WeaponInfo.bulletPrefab, firingPoint.transform.position, transform.rotation).GetComponent<Bullet>();
         instantiatedBullet.SetupBulletParameters(bulletInfo.projectileSpeed, bulletInfo.size, WeaponInfo.damage, bulletInfo.lifeTime);
+        //WeaponInfo.lastFireTime = Time.time;
         --WeaponInfo.currentAmmo;
     }
 
     public void SecondaryAttack(){
         //no op
+    }
+
+    public bool CanFire(){
+        return WeaponInfo.fireRate <= Time.time - WeaponInfo.lastFireTime;
     }
 
     public bool HasAmmo(){
@@ -83,9 +78,9 @@ public class SMG : MonoBehaviour, IWeapon
         int ammoBeforeReload = WeaponInfo.currentAmmo;
         WeaponInfo.currentAmmo = 0;
 
-        if( WeaponInfo.roundCapacity - ammoBeforeReload <= WeaponInfo.currentReserveAmmo){
-            WeaponInfo.currentReserveAmmo -= WeaponInfo.roundCapacity - ammoBeforeReload;
-            WeaponInfo.currentAmmo = WeaponInfo.roundCapacity;
+        if( WeaponInfo.ammoInClip - ammoBeforeReload <= WeaponInfo.currentReserveAmmo){
+            WeaponInfo.currentReserveAmmo -= WeaponInfo.ammoInClip - ammoBeforeReload;
+            WeaponInfo.currentAmmo = WeaponInfo.ammoInClip;
         }
         else {
             WeaponInfo.currentAmmo += WeaponInfo.currentReserveAmmo;
@@ -112,7 +107,7 @@ public class SMG : MonoBehaviour, IWeapon
 
     public void HandleReloadStart(){
 
-        if(WeaponInfo.currentReserveAmmo == 0 || WeaponInfo.currentAmmo == WeaponInfo.roundCapacity || WeaponInfo.isReloading) 
+        if(WeaponInfo.currentReserveAmmo == 0 || WeaponInfo.currentAmmo == WeaponInfo.ammoInClip || WeaponInfo.isReloading) 
         return;
 
         WeaponInfo.isFiring = false;        
@@ -126,25 +121,6 @@ public class SMG : MonoBehaviour, IWeapon
     }
 
     public void HandleFiringAnimationEnd(){
-        //no op
-    }
-
-    public void HandleSecondaryAttackInput()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void HandleSecondaryAttackInputCancel()
-    {
-        throw new System.NotImplementedException();
-    }
-    public void ResetWeaponState(){
-        WeaponInfo.isFiring = false;
-        WeaponInfo.isReloading = false;
-        _animator.SetBool("isFiring", false);
-        _animator.ResetTrigger("ReloadTrigger");
-        //_animator.Play("Idle");
-        _animator.SetTrigger("WeaponSwitchTrigger");
-        GetComponent<SpriteRenderer>().sprite = WeaponInfo.sprite;
+        //
     }
 }

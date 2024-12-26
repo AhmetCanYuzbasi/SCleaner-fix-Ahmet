@@ -2,19 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DummyScript : MonoBehaviour, IEnemy, IDamageable
+public class DummyScript : MonoBehaviour 
+    //IEnemy
 {
     public void Attack()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void PlayerIsDetected()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void PlayerIsOutOfChaseRange()
     {
         throw new System.NotImplementedException();
     }
@@ -24,14 +15,15 @@ public class DummyScript : MonoBehaviour, IEnemy, IDamageable
         throw new System.NotImplementedException();
     }
 
-
-    public void TakeDamage(int amount)
+    // Start is called before the first frame update
+    void Start()
     {
-        print("I have taken damage!");
+        
     }
 
-    public void TakeDamage(IEnemy attacker)
+    // Update is called once per frame
+    void Update()
     {
-        throw new System.NotImplementedException();
+        
     }
 }

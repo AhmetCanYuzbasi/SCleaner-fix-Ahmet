@@ -12,18 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f9b895cf14abb4ca2727ed4c5bc8fe, type: 3}
   m_Name: SMGSO
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: ee9870b1675272d42a735fce29d0358a, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 13f27f57a46cb464a9f51d4aa540e5d2, type: 3}
   gunSound: {fileID: 8300000, guid: e2dbaf20f5d9ca544a60d80ddb929075, type: 3}
+  shootAnimation: {fileID: 7400000, guid: e15ab6ce027d39e4fb311beb2826d3d8, type: 2}
+  reloadAnimation: {fileID: 7400000, guid: 01c5542b08372144a8ab56acf7036a94, type: 2}
   bulletPrefab: {fileID: 6657017082548522162, guid: c77308c80b6609f4eb203a2ff835a4b3, type: 3}
-  type: 0
+  Type: 1
   bulletInfo: {fileID: 11400000, guid: a3d432f8e7373a146a7bc5cdb97754b7, type: 2}
   offset: {x: 0.45, y: 0, z: 0}
   weaponName: SMG
-  damage: 5
-  currentAmmo: 30
-  roundCapacity: 30
+  damage: 3
+  currentAmmo: 24
+  ammoInClip: 30
   maxReserveAmmo: 120
-  currentReserveAmmo: 106
+  currentReserveAmmo: 379
   pelletCount: 1
+  lastFireTime: 0
+  fireRate: 0
   isReloading: 0
   isFiring: 0

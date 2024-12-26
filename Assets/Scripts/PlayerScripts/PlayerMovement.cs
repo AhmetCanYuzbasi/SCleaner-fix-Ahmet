@@ -2,15 +2,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour, ISetup, IDisable
 {
-    
 
-    Rigidbody2D _rb2D;
-    Vector2 _moveDirection;
-    UnitInfoSO _playerInfo;
     public delegate void OnDashInput(Vector2 moveDirection);
     public static OnDashInput onDash;
     public InputActionAsset inputActions;
     InputAction _movementInputAction;
+    Rigidbody2D _rb2D;
+    Vector2 _moveDirection;
     public UnitInfoSO playerInfo;
     
 
@@ -65,5 +63,6 @@ public class PlayerMovement : MonoBehaviour, ISetup, IDisable
         _rb2D.constraints = RigidbodyConstraints2D.FreezeAll;
         _movementInputAction.Disable();
         enabled = false;
+        FindObjectOfType<GameManager>().EndGame();
     }
 }

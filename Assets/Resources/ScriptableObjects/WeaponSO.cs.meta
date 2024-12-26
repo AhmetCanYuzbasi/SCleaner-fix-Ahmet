@@ -4,7 +4,10 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
+  - weaponSprite: {instanceID: 0}
   - gunSound: {instanceID: 0}
+  - shootAnimation: {instanceID: 0}
+  - reloadAnimation: {instanceID: 0}
   - bulletPrefab: {instanceID: 0}
   - bulletInfo: {instanceID: 0}
   executionOrder: 0

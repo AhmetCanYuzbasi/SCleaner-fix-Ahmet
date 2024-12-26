@@ -98,13 +98,6 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.33333334
-    functionName: PlayCurrentWeaponAudio
-    data: 
-    objectReferenceParameter: {fileID: 8300000, guid: 9e5b3436ab19f65429585e1166540cfc, type: 3}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
   - time: 0.5833333
     functionName: Reload
     data: 

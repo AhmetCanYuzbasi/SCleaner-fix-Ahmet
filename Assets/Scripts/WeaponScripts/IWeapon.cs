@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
+
+//This interface defines the most common methods
+//and properties a weapon should possess
+//any new weapon MUST implement this interface 
 
 public interface IWeapon 
 {
@@ -8,15 +12,12 @@ public interface IWeapon
     public void Reload();
     public void HandlePrimaryAttackInput();
     public void HandlePrimaryAttackInputCancel();
-    public void HandleSecondaryAttackInput();
-    public void HandleSecondaryAttackInputCancel();
     public void HandleFiringAnimationEnd();
     public void HandleReloadStart();
     public void HandleReloadEnd();
     public void PrimaryAttack();
     public void SecondaryAttack();
+    public bool CanFire();
     public bool HasAmmo();
-    public void ReceiveFiringPoint(Transform firingPoint);
-    public void ResetWeaponState();
     
 }

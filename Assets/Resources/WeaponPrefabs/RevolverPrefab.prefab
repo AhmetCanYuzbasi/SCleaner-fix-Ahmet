@@ -75,8 +75,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 178966987
-  m_SortingLayer: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0275ee1f17558584aa0d818221b668e7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -195,7 +195,7 @@ Animator:
   m_GameObject: {fileID: 5890597930396712892}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c05253548fc5c574aafad69d1d8e63e1, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8cfb2bbde444cc94d982e48b8416b364, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -220,8 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletInfo: {fileID: 11400000, guid: a82aa05a3bcd30a4bb278b029a78a0d9, type: 2}
   firingPoint: {fileID: 7718260043891111844}
-  _animator: {fileID: 0}
-  _runtimeAnimatorController: {fileID: 0}
+  _animator: {fileID: 4472284901953710207}
 --- !u!114 &3725376543127102386
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PlayerInvulnTimer : MonoBehaviour
 {
+    public UnitInfoSO dummy;
     float _invulnTimer = 2f;
-    bool hurtInvuln = false;
-    bool dashInvuln = false;
 
     void OnEnable(){
         PlayerHealth.onPlayerDamaged += TickInvulnTimerForHurt;
@@ -25,7 +24,7 @@ public class PlayerInvulnTimer : MonoBehaviour
     }
 
     IEnumerator TickInvulnTimerForDash(UnitInfoSO playerInfo, float dashDuration){
-        if (hurtInvuln) yield break;
+        if (playerInfo.isInvuln) yield break;
         playerInfo.isInvuln = true;
         yield return new WaitForSeconds(dashDuration);
         playerInfo.isInvuln = false;

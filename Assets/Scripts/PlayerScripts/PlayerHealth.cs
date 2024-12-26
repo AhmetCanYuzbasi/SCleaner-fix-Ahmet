@@ -15,8 +15,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealth, ISetup
     //Event for invoking SpriteBlink script for sprite blinking during i-frames
     //when player takes damage (referred to as player being hit)
     
-    public delegate IEnumerator OnPlayerHitInvulnEventHandler();
-    public static OnPlayerHitInvulnEventHandler onPlayerHitInvuln;
+    public delegate IEnumerator OnPlayerHit();
+    public static OnPlayerHit onPlayerHit;
 
 
     //Event for invoking player death related scripts like animations, sounds etc.
@@ -26,11 +26,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealth, ISetup
     public static OnPlayerDeath onPlayerDeath;
 
     void OnEnable(){
-        PlayerHitbox.onPlayerHitTakeDamage += TakeDamage;   
+        PlayerHitbox.onPlayerHit += TakeDamage;   
     }
 
     void OnDisable(){
-        PlayerHitbox.onPlayerHitTakeDamage -= TakeDamage;
+        PlayerHitbox.onPlayerHit -= TakeDamage;
     }
 
 
@@ -49,20 +49,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealth, ISetup
     public void TakeDamage(int amount){
 
         if (playerInfo.isInvuln) return;
-        if (!playerInfo.isAlive) return;
 
-        playerInfo.health -= amount;
+        playerInfo.health -= 5;
         if (playerInfo.health <= 0){
             playerInfo.isAlive = false;
-            GetComponent<SpriteRenderer>().sprite = playerInfo.DefeatSprite;
             onPlayerDeath?.Invoke();
-            PlayPlayerSounds.PlayAudio(playerInfo.OnDefeatSFX);
             return;
         }
-        PlayPlayerSounds.PlayAudio(playerInfo.OnHitSFX);
-        //coroutine for invuln event
+        onPlayerHit?.Invoke();
         StartCoroutine(onPlayerDamaged?.Invoke(playerInfo));
-        //coroutine for sprite blink
-        StartCoroutine(onPlayerHitInvuln?.Invoke());
+        StartCoroutine(onPlayerHit?.Invoke());
     }
 }

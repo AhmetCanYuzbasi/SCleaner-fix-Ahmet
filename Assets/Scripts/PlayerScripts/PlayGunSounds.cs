@@ -5,16 +5,26 @@ using UnityEngine.Audio;
 
 public class PlayGunSounds : MonoBehaviour
 {
-    AudioSource _audioSource;
+    AudioSource source;
+    void OnEnable(){
+        WeaponManager.onLeftMouseButtonClicked += PlayGunSound;
+    }
+
+    void OnDisable(){
+        WeaponManager.onLeftMouseButtonClicked -= PlayGunSound;
+    }
 
     void Start(){
-        _audioSource = GetComponent<AudioSource>();
+        source = GetComponent<AudioSource>();
     }
 
-    void PlayCurrentWeaponAudio(AudioClip fireSound){
-        if(_audioSource != null & fireSound != null)
-        _audioSource.PlayOneShot(fireSound);
-    }
+    void PlayGunSound(AudioClip gunSound){
 
+        source.clip = gunSound;
+        if (!source.isPlaying){
+            source.Play();
+        }
+        //source.PlayOneShot(gunSound);
+    }
 
 }
