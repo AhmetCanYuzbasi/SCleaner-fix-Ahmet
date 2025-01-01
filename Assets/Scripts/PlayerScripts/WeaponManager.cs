@@ -1,3 +1,8 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,86 +10,67 @@ using UnityEngine.InputSystem;
     //such as shooting, reloading. It only takes the input and
     //relegates the actual functionality to the weapon itself
 
-public class WeaponManager : MonoBehaviour, IDisable
+public class WeaponManager : MonoBehaviour
 {
-    public delegate void OnLeftMouseButtonClick(AudioClip gunSound);
-    public static event OnLeftMouseButtonClick onLeftMouseButtonClicked;
+    public Sprite playerAttackSprite;
+    public Sprite defaultSprite;
+    [SerializeField] SpriteRenderer _spriteRenderer;
+    [SerializeField] GameObject _currentWeaponGO;
+    public Transform _weaponPosition;
+    public AudioClip weaponSwitchAudio;
+
+    public IWeapon currentWeaponScript;
     InputAction _primaryAttackAction;
-    [SerializeField] Transform weaponPosition;
-    [SerializeField] GameObject weaponPrefab;
-    bool _isMouseHeld;
-    IWeapon currentWeapon;
     
+    bool _isLMBHeld;
 
     void OnEnable(){
-        PlayerHealth.onPlayerDeath += DisableScript;
+        PlayerInventory.OnInventoryReadyEvent += ReceiveWeapon;
+        PlayerInventory.OnWeaponSwitchEvent += SwitchWeapon;
     }
 
     void OnDisable(){
-        PlayerHealth.onPlayerDeath -= DisableScript;
+        PlayerInventory.OnInventoryReadyEvent -= ReceiveWeapon;
+        PlayerInventory.OnWeaponSwitchEvent -= SwitchWeapon;
     }
-
-    void Awake(){
-
-        if (weaponPrefab == null)
-            weaponPrefab = Instantiate(Resources.Load("WeaponPrefabs/PistolPrefab")) as GameObject;
-
-        else 
-            weaponPrefab = Instantiate(weaponPrefab);
-        
-    }
-
-    void Start(){
-        
-        currentWeapon = weaponPrefab.GetComponent<IWeapon>();
-        weaponPrefab.transform.parent = transform;
-        weaponPrefab.transform.position = weaponPosition.position;
-        weaponPrefab.transform.localPosition += currentWeapon.WeaponInfo.offset;
-
-    }   
-
 
     public void Update(){
-
-        /*if(_primaryAttackAction.IsPressed() && currentWeapon.HasAmmo() && !currentWeapon.WeaponInfo.isReloading && !currentWeapon.WeaponInfo.isFiring){
-            currentWeapon.HandlePrimaryAttackInput();
-        }*/
-
         if(_primaryAttackAction.IsPressed()){
-            _isMouseHeld = true;
-            currentWeapon.HandlePrimaryAttackInput();
+            _isLMBHeld = true;
+            currentWeaponScript.HandlePrimaryAttackInput();
+            _spriteRenderer.sprite = playerAttackSprite;
         } 
-        else if (_isMouseHeld && !_primaryAttackAction.IsPressed()){
-            _isMouseHeld = false;
-            currentWeapon.HandlePrimaryAttackInputCancel();
+        else if (_isLMBHeld && !_primaryAttackAction.IsPressed()){
+            _spriteRenderer.sprite = defaultSprite;
+            _isLMBHeld = false;
+            currentWeaponScript.HandlePrimaryAttackInputCancel();
         }
         
-        /*else if(currentWeapon.WeaponInfo.isFiring && (!_primaryAttackAction.IsPressed() || currentWeapon.WeaponInfo.isReloading)){
-            currentWeapon.HandlePrimaryAttackInputCancel();
-        }*/
-            
     }
 
-    public void HandleSecondaryAttackInput(){
-        currentWeapon.SecondaryAttack();
-    }
-
-
-    public void DisableScript()
-    {
-        _primaryAttackAction.Disable();
-        enabled = false;
+    public void ReceiveWeapon(GameObject weapon, IWeapon weaponScript, WeaponSO info){
+        _currentWeaponGO = weapon;
+        currentWeaponScript = weaponScript;
+        if(currentWeaponScript.WeaponInfo == null)
+            currentWeaponScript.WeaponInfo = info;
+        
+        _currentWeaponGO.SetActive(true);
     }
 
     
-    public void WeaponSwap(IWeapon weapon){
-            currentWeapon = weapon;
-            //currentWeapon = weapons[1];
+    public void SwitchWeapon(GameObject weapon, IWeapon weaponScript){
+        if(currentWeaponScript.WeaponInfo.isFiring) return;
+        PlayPlayerSounds.PlayAudio(weaponSwitchAudio);
+        weaponScript.ResetWeaponState();
+        _currentWeaponGO.SetActive(false);
+        _currentWeaponGO = weapon;
+        _currentWeaponGO.SetActive(true);
+        currentWeaponScript = weaponScript;
     }
 
     public void TriggerReload(InputAction.CallbackContext ctx){
         if (ctx.performed){
-            currentWeapon.HandleReloadStart();
+            currentWeaponScript.HandleReloadStart();
         }
     }
 

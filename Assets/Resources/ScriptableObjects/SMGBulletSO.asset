@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SMGBulletSO
   m_EditorClassIdentifier: 
   bulletType: 0
-  projectileSpeed: 10
+  projectileSpeed: 25
   size: 1
   lifeTime: 5

@@ -1,26 +1,23 @@
-//using TreeEditor;
 using UnityEngine;
 
 public class PlayerDetection : MonoBehaviour
 {    
+
     IEnemy script;
     
-    void Start()
-    {
+    void Start(){
         script = GetComponentInParent<IEnemy>();
     }
+
     void OnTriggerEnter2D(Collider2D other){
         if(other.CompareTag("Player")){
-            //script.PlayerIsDetected();
-            script.SpecialAbility(other.GetComponent<PlayerMovement>());
-            //splashSlime.Splash();
-        } 
+            script.PlayerIsDetected();
+        }
     }
 
-     void OnTriggerExit2D(Collider2D other){
+    void OnTriggerExit2D(Collider2D other){
         if(other.CompareTag("Player")){
-            //script.PlayerIsOutOfChaseRange();
-        } 
-        
-    } 
+            script.PlayerOutOfRange();
+        }
+    }
 }

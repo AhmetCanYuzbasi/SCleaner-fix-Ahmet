@@ -1,35 +1,36 @@
-using System.Security;
+using System;
 using UnityEngine;
 
 public class BugHealth : MonoBehaviour, IDamageable, IHealth
 {
-    private UnitInfoSO bugStats;
-
-    DamageFlash _damageFlash;
+    public static event Action OnDeathEvent;
+    public UnitInfoSO UnitInfo{get;set;}
+    [SerializeField] DamageFlash _damageFlash;
+    [SerializeField] GameObject parent;
+    public DropRandomItem itemDropper;
 
     void Awake(){
-        if (bugStats == null){
-            bugStats = ScriptableObject.CreateInstance<UnitInfoSO>();
+        if (UnitInfo == null){
+            UnitInfo = ScriptableObject.CreateInstance<UnitInfoSO>();
         }
         if (_damageFlash == null){
             _damageFlash = GetComponent<DamageFlash>();
-
         }
-        FindObjectOfType<GameManager>().EnemyStat();
-
     }
     void Start()
     {
-        bugStats.health = bugStats.maxHealth;
+        UnitInfo.health = UnitInfo.maxHealth;
     }
 
     public void TakeDamage(int amount){
+        if(!UnitInfo.isAlive) return;
+        
         _damageFlash.TriggerDamageFlash();
-        bugStats.health -= amount;
-        Debug.Log("Current health " + bugStats.health);
-        if(bugStats.health <= 0){
-            Destroy(gameObject);
-            FindObjectOfType<GameManager>().KillStat();
+        UnitInfo.health -= amount;
+        if(UnitInfo.health <= 0){     
+            OnDeathEvent?.Invoke();   
+            itemDropper.DropItem();    
+            Destroy(parent);  
         }
     }
 

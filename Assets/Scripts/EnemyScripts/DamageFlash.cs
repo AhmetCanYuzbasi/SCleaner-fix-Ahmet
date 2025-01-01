@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class DamageFlash : MonoBehaviour
 {
-
+    [ColorUsage(true, true)]
     [SerializeField] Color _flashColor = Color.white;
     [SerializeField] float _flashTime = 0.25f;
 
-    SpriteRenderer _spriteRenderer;
+    public SpriteRenderer _spriteRenderer;
     Material _mat;
 
     // Start is called before the first frame update
     void Start()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
         _mat = _spriteRenderer.material;
         SetFlashColor();
     }

@@ -1,24 +1,103 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class PlayerInventory : MonoBehaviour
 {
 
-    List<IWeapon> weapons = new List<IWeapon>();
+    public static Action<GameObject, IWeapon, WeaponSO> OnInventoryReadyEvent;
+    public static Action<GameObject, IWeapon> OnWeaponSwitchEvent;
+    [SerializeField] List<GameObject> weaponPrefabs = new();
+    [SerializeField] List<GameObject> weaponGOs = new();
+    [SerializeField] List<IWeapon> weaponScripts = new();
+    [SerializeField] Transform _weaponParent;
+    [SerializeField] Transform _weaponPosition;
+    GameObject currentWeapon;
+    IWeapon currentWeaponScript;
+    int weaponCount = 4;
+    public int currentlyUsedSlot = 0;
 
-    // Start is called before the first frame update
+    void Awake(){
+        GameObject instantiatedWeaponPrefab;
+        for(int i = 0; i < weaponCount; ++i){
+            if(weaponPrefabs.ElementAt(i)){
+                instantiatedWeaponPrefab = Instantiate(weaponPrefabs[i]);
+                weaponGOs.Add(instantiatedWeaponPrefab);
+            }
+        }
+    }
+    
     void Start()
     {
-        //IWeapon weaponOne = gameObject.AddComponent<StarterPistolScript>();
-        //IWeapon weaponTwo = gameObject.AddComponent<Shotgun>();
-        //weapons.Add(weaponOne);
-        //weapons.Add(weaponTwo);
+        IWeapon instantiatedWeaponScript;
+        for(int i = 0; i < weaponCount; ++i){
+            if(_weaponParent != null){
+
+            instantiatedWeaponScript = weaponGOs.ElementAt(i).GetComponent<IWeapon>();
+            weaponScripts.Add(instantiatedWeaponScript);
+            weaponGOs[i].transform.parent = _weaponParent;
+            //print(_weaponPosition.position);
+            weaponGOs[i].transform.position = _weaponPosition.position;
+
+            weaponGOs[i].transform.localPosition += instantiatedWeaponScript.WeaponInfo.offset;
+            weaponGOs[i].SetActive(false);
+            }
+            
+        }
+        currentWeapon = weaponGOs.ElementAt(currentlyUsedSlot);
+        currentWeaponScript = weaponScripts.ElementAt(currentlyUsedSlot);
+        OnInventoryReadyEvent?.Invoke(currentWeapon, currentWeaponScript, currentWeaponScript.WeaponInfo);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    public void WeaponSwap(InputAction.CallbackContext ctx){
+    if(currentWeaponScript.WeaponInfo.isFiring) return;
+
+    int slotToSwitchTo;
+    if(ctx.performed){
+        if (ctx.control is KeyControl keyControl)
+        {
+            Key pressedKey = keyControl.keyCode;
+            switch(pressedKey){
+                case Key.Digit1:
+                    slotToSwitchTo = 0;
+                    if(weaponGOs[slotToSwitchTo] != null && slotToSwitchTo != currentlyUsedSlot){
+                        WeaponSlotChange(currentlyUsedSlot, slotToSwitchTo);
+                    }
+                    
+                    break;
+                case Key.Digit2:
+                    slotToSwitchTo = 1;
+                    if(weaponGOs[slotToSwitchTo] != null && slotToSwitchTo != currentlyUsedSlot){
+                        WeaponSlotChange(currentlyUsedSlot, slotToSwitchTo);
+                    }
+                    
+                    break;
+                case Key.Digit3:
+                        slotToSwitchTo = 2;
+                    if(weaponGOs[slotToSwitchTo] != null && slotToSwitchTo != currentlyUsedSlot){
+                        WeaponSlotChange(currentlyUsedSlot, slotToSwitchTo);
+                    }   
+                    break;
+                case Key.Digit4:
+                        slotToSwitchTo = 3;
+                    if(weaponGOs[slotToSwitchTo] != null && slotToSwitchTo != currentlyUsedSlot){
+                        WeaponSlotChange(currentlyUsedSlot, slotToSwitchTo);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
         
+    }
+
+    void WeaponSlotChange(int currentSlot, int slotToSwitchTo){
+        OnWeaponSwitchEvent?.Invoke(weaponGOs[slotToSwitchTo], weaponScripts[slotToSwitchTo]);
+        currentWeaponScript = weaponScripts[slotToSwitchTo];
+        currentlyUsedSlot = slotToSwitchTo;
     }
 }

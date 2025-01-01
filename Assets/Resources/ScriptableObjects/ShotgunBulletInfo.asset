@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ShotgunBulletInfo
   m_EditorClassIdentifier: 
   bulletType: 0
-  projectileSpeed: 10
-  size: 1
-  lifeTime: 1
+  projectileSpeed: 15
+  size: 0.25
+  lifeTime: 2

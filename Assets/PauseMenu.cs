@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
 public class PauseMenu : MonoBehaviour
 {
+
+    public static event Action OnGamePaused;
+    public static event Action OnGameResumed;
     public static bool GameIsPaused = false;
 
     public GameObject pauseMenuUI;
@@ -28,6 +29,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
+        OnGameResumed?.Invoke();
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         GameIsPaused = false;
@@ -35,6 +37,7 @@ public class PauseMenu : MonoBehaviour
 
     void Pause()
     {
+        OnGamePaused?.Invoke();
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused=true;

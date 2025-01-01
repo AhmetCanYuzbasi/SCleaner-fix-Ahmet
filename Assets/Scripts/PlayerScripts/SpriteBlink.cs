@@ -1,30 +1,27 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpriteBlink : MonoBehaviour
 {
-    SpriteRenderer spriteRenderer;
+    [SerializeField] SpriteRenderer _spriteRenderer;
+    readonly int blinkCount = 4;
 
     void OnEnable(){
-        PlayerHealth.onPlayerHit += Blink;
+        PlayerHealth.onPlayerHitInvuln += Blink;
         
     }
 
     void OnDisable(){
-        PlayerHealth.onPlayerHit -= Blink;
+        PlayerHealth.onPlayerHitInvuln -= Blink;
     }
     
-    void Start()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
     IEnumerator Blink(){
         int currentBlinkCount = 0;
-        while (currentBlinkCount < 4){
-            spriteRenderer.enabled = false;
+        while (currentBlinkCount < blinkCount){
+            _spriteRenderer.enabled = false;
             yield return new WaitForSeconds(0.25f);
-            spriteRenderer.enabled = true;
+            _spriteRenderer.enabled = true;
             ++currentBlinkCount;
             yield return new WaitForSeconds(0.25f);
         }

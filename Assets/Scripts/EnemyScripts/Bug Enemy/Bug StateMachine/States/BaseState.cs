@@ -1,14 +1,16 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 
 public abstract class BaseState : IState
 {
-    protected readonly BugEnemy enemy;
+    protected readonly GameObject enemy;
     protected readonly GameObject player;
     protected readonly Rigidbody2D rb2D;
     protected readonly NavMeshAgent agent; 
 
-    public BaseState(BugEnemy enemy, GameObject player, Rigidbody2D rb2D, NavMeshAgent agent){
+    public BaseState(GameObject enemy, GameObject player, Rigidbody2D rb2D, NavMeshAgent agent){
         this.enemy = enemy;
         this.player = player;
         this.rb2D = rb2D;
@@ -35,4 +37,9 @@ public abstract class BaseState : IState
     {
         //noop
     }
+
+    public virtual void TriggerCoroutine(Coroutine coroutine){
+        
+    }
+
 }
