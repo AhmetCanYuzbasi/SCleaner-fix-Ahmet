@@ -4,21 +4,18 @@ using UnityEngine.InputSystem;
 
 public class PlayerDash : MonoBehaviour, ISetup
 {
-
-
+    
     public delegate IEnumerator OnDashTriggered(UnitInfoSO playerInfo, float dashDuration);
     public static OnDashTriggered onDashTriggered;
     Rigidbody2D _rb2D;
     UnitInfoSO _playerInfo;
+    AudioClip _dashSFX;
     float _dashSpeed = 15f; 
     float _dashDuration = .2f;
     float _dashTime = 0f;  
     int _dashCount = 3; 
     float _timeSinceLastDash;
     int _remainingDashes;
-
-
-    
 
     void OnEnable(){
         PlayerMovement.onDash += PerformDash;
@@ -37,6 +34,7 @@ public class PlayerDash : MonoBehaviour, ISetup
 
     public void Init(UnitInfoSO info){
         _playerInfo = info;
+        _dashSFX = _playerInfo.DashSFX;
     }
 
     private void Update()
@@ -64,7 +62,7 @@ public class PlayerDash : MonoBehaviour, ISetup
             _playerInfo.isDashing = true;
             _dashTime = _dashDuration;
 
-           
+            PlayPlayerSounds.PlayAudio(_dashSFX, .25f);
             StartCoroutine(onDashTriggered?.Invoke(_playerInfo, _dashDuration));
             _timeSinceLastDash = Time.time;
 
@@ -81,10 +79,10 @@ public class PlayerDash : MonoBehaviour, ISetup
     // and that some time has passed since the player's last dash
     public void ResetDashes()
     {
-        if( (_remainingDashes != _dashCount) && (1.5f < Time.time - _timeSinceLastDash) ){
+        if( (_remainingDashes != _dashCount) &&  (1.5f < Time.time - _timeSinceLastDash) ){
             //Debug.Log("Time since last dash : " + (Time.time - timeSinceLastDash));
             _remainingDashes = _dashCount;
-            Debug.Log(_remainingDashes);
+            PlayPlayerSounds.PlayAudio(_playerInfo.DashRecoverSFX);
         }
         
     }

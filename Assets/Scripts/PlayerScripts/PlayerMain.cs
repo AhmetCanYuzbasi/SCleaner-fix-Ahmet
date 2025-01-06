@@ -1,35 +1,50 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMain : MonoBehaviour
 {
-    PlayerInput playerInput;
-    InputActionAsset playerActionAsset;
-    InputActionMap playerActionMap;
+    [SerializeField] PlayerInput playerInput;
+    [SerializeField] InputActionAsset playerActionAsset;
+    [SerializeField] InputActionMap playerActionMap;
+    [SerializeField] PlayerHealth playerHealth;
+    [SerializeField] PlayerMovement playerMovement;
+    [SerializeField] PlayerDash playerDash;
+    [SerializeField] PlayerAim playerAim;
     public UnitInfoSO playerInfo;
-    PlayerHealth playerHealth;
-    PlayerMovement playerMovement;
-    PlayerDash playerDash;
-    WeaponManager weaponManager;
+    public WeaponManager weaponManager;
+
+
+    void OnEnable(){
+        PlayerHealth.onPlayerDeath += DisableInput;
+        PauseMenu.OnGamePaused += DisableInput;
+        PauseMenu.OnGameResumed += EnableInput;
+    }
+
+    void OnDisable(){
+        PlayerHealth.onPlayerDeath -= DisableInput;
+        PauseMenu.OnGamePaused -= DisableInput;
+        PauseMenu.OnGameResumed -= EnableInput;
+    }
+
 
     void Awake(){
-        playerInput = GetComponent<PlayerInput>();
+        //playerInput = GetComponent<PlayerInput>();
         playerActionAsset = playerInput.actions;
         playerActionMap = playerActionAsset.FindActionMap("Gameplay");
         playerActionMap.Enable();
 
         if (playerInfo == null){
             Debug.Log("Player info is null, creating");
-            playerInfo = ScriptableObject.CreateInstance<UnitInfoSO>();
+            //playerInfo = ScriptableObject.CreateInstance<UnitInfoSO>();
+            playerInfo = Resources.Load<UnitInfoSO>("Scriptable Objects/PlayerInfo");
         }
         playerInfo.Init();
 
-        playerHealth = GetComponent<PlayerHealth>();
+        /*playerHealth = GetComponent<PlayerHealth>();
         playerMovement = GetComponent<PlayerMovement>();
         playerDash = GetComponent<PlayerDash>();
         weaponManager = GetComponentInChildren<WeaponManager>();
+        */
         
         playerHealth.Init(playerInfo);
 
@@ -42,7 +57,15 @@ public class PlayerMain : MonoBehaviour
 
 
     }
-
     
-   
+    void DisableInput(){
+        playerAim.enabled = false;
+        playerActionMap.Disable();
+    }
+
+    void EnableInput(){
+        playerAim.enabled = true;
+        playerActionMap.Enable();
+    }
+       
 }

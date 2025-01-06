@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: RevolverBulletSO
   m_EditorClassIdentifier: 
   bulletType: 0
-  projectileSpeed: 5
+  projectileSpeed: 30
   size: 1
-  lifeTime: 5
+  lifeTime: 3

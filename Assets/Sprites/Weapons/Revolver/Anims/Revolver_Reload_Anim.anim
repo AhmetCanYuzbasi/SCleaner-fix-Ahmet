@@ -136,6 +136,20 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
+  - time: 0
+    functionName: PlayCurrentWeaponAudio
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: 6d2847e170d7e2a489df2d24cf0c38ff, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.3333334
+    functionName: PlayCurrentWeaponAudio
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: cd003c38649e3894bbd97a7fff41e594, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 1.8333334
     functionName: HandleReloadEnd
     data: 

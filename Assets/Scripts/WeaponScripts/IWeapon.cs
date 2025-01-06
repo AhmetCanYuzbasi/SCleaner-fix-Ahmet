@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
-
-
-//This interface defines the most common methods
-//and properties a weapon should possess
-//any new weapon MUST implement this interface 
 
 public interface IWeapon 
 {
+    public static event Action OnWeaponFireEvent;
+    public static void Invoke() => OnWeaponFireEvent?.Invoke();
     WeaponSO WeaponInfo{get;set;}
     public void Reload();
     public void HandlePrimaryAttackInput();
@@ -16,8 +12,7 @@ public interface IWeapon
     public void HandleReloadStart();
     public void HandleReloadEnd();
     public void PrimaryAttack();
-    public void SecondaryAttack();
-    public bool CanFire();
     public bool HasAmmo();
+    public void ResetWeaponState();
     
 }

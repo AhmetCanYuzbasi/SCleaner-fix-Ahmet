@@ -10,24 +10,28 @@ TagManager:
   - Ground
   - Spawn Area
   - GrenadeSpawnPoint
+  - PlayerHitbox
+  - Pickup
+  - EnemyHitbox
+  - Equipment
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Wall
+  - PlayerHitbox
   - Water
   - UI
   - Enemy
   - Player
   - Bullet
   - Borders
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - EnemyHitbox
+  - Detection
+  - Environment
+  - Equipment
+  - Floor
+  - Props
+  - OutsideOfGameArea
   - 
   - 
   - 

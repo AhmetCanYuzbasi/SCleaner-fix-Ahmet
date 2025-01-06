@@ -4,41 +4,53 @@ using UnityEngine;
 
 public class SMG : MonoBehaviour, IWeapon
 {
+    public GameObject rayCastStartPoint;
+    public GameObject rayCastEndPoint;
+    public Transform muzzleTipCheck;
+    public LayerMask enemyLayer;
+    public LayerMask environmentLayers;
+    public LayerMask mixedLayerMask;
     public WeaponSO WeaponInfo { get; set;}
     [SerializeField] BulletSO bulletInfo;
     [SerializeField] Transform firingPoint;
     [SerializeField] Animator _animator;
+    [SerializeField] RuntimeAnimatorController _runtimeAnimatorController;
 
     void Awake(){
         if (WeaponInfo == null){
-            Debug.Log("SMG weapon info missing. Loading resource.");
+            //Debug.Log("SMG weapon info missing. Loading resource.");
             WeaponInfo = Resources.Load<WeaponSO>("ScriptableObjects/SMGSO");
         }
-        print(WeaponInfo);
+        //print(WeaponInfo);
 
         if(WeaponInfo.bulletInfo == null){
-            Debug.Log("SMG bullet info (part of SMG weapon info) missing. Loading pistol bullet info resource.");
+            //Debug.Log("SMG bullet info (part of SMG weapon info) missing. Loading pistol bullet info resource.");
             bulletInfo = Resources.Load<BulletSO>("ScriptableObjects/SMGBulletSO");
             //WeaponInfo.bulletInfo = bulletInfo;
         }
         else {
-            Debug.Log("SMG bullet info (part of SMG bullet info) already exists.");
+            //Debug.Log("SMG bullet info (part of SMG bullet info) already exists.");
             bulletInfo = WeaponInfo.bulletInfo;
         }
 
         if (firingPoint == null){
-            Debug.Log("FiringPoint not assigned. Finding...");
-            print(firingPoint.transform.position.x + "    " + firingPoint.transform.position.y);
+            //Debug.Log("FiringPoint not assigned. Finding...");
+            firingPoint = GetComponentInChildren<Transform>();
+            //print(firingPoint.transform.position.x + "    " + firingPoint.transform.position.y);
         }
+
+        if (_animator.runtimeAnimatorController == null){
+            //print("Runtime animator controller is null, fetching.");
+            _runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("AnimatorControllers/SMG_AC");
+            _animator.runtimeAnimatorController = _runtimeAnimatorController;
+        }
+        WeaponInfo.Init();
     }
 
     void Start(){
-        //GetComponent<SpriteRenderer>().sprite = WeaponInfo.weaponSprite;
         if (!_animator){
             _animator = GetComponent<Animator>();
         }
-        WeaponInfo.lastFireTime = WeaponInfo.fireRate;
-        //PlayWeaponSounds.ReceiveAudioSource(GetComponent<AudioSource>());
     }
 
     void Update(){
@@ -46,24 +58,28 @@ public class SMG : MonoBehaviour, IWeapon
             HandlePrimaryAttackInputCancel();
             HandleReloadStart();
         }
+        else if (!HasAmmo() && WeaponInfo.currentReserveAmmo == 0 && !WeaponInfo.isReloading){
+            HandlePrimaryAttackInputCancel();
+        }
+    }
+
+    public void ReceiveFiringPoint(Transform firingPoint){
+        this.firingPoint = firingPoint;
     }
 
     public void PrimaryAttack(){
-        print("called");
-        if (!HasAmmo() || WeaponInfo.isReloading || !CanFire()) return;
+
+        /*GameObject overlappingEnemy = ObstructionChecker.CheckMuzzleEnemyOverlap(muzzleTipCheck, enemyLayer, 0.25f);
+        if(overlappingEnemy != null){
+            IDamageable damageable = overlappingEnemy.GetComponent<IDamageable>();
+            damageable?.TakeDamage(WeaponInfo.damage * WeaponInfo.pelletCount);
+        }*/
 
         Bullet instantiatedBullet = Instantiate(WeaponInfo.bulletPrefab, firingPoint.transform.position, transform.rotation).GetComponent<Bullet>();
         instantiatedBullet.SetupBulletParameters(bulletInfo.projectileSpeed, bulletInfo.size, WeaponInfo.damage, bulletInfo.lifeTime);
-        //WeaponInfo.lastFireTime = Time.time;
+        
+        IWeapon.Invoke();
         --WeaponInfo.currentAmmo;
-    }
-
-    public void SecondaryAttack(){
-        //no op
-    }
-
-    public bool CanFire(){
-        return WeaponInfo.fireRate <= Time.time - WeaponInfo.lastFireTime;
     }
 
     public bool HasAmmo(){
@@ -78,9 +94,9 @@ public class SMG : MonoBehaviour, IWeapon
         int ammoBeforeReload = WeaponInfo.currentAmmo;
         WeaponInfo.currentAmmo = 0;
 
-        if( WeaponInfo.ammoInClip - ammoBeforeReload <= WeaponInfo.currentReserveAmmo){
-            WeaponInfo.currentReserveAmmo -= WeaponInfo.ammoInClip - ammoBeforeReload;
-            WeaponInfo.currentAmmo = WeaponInfo.ammoInClip;
+        if( WeaponInfo.roundCapacity - ammoBeforeReload <= WeaponInfo.currentReserveAmmo){
+            WeaponInfo.currentReserveAmmo -= WeaponInfo.roundCapacity - ammoBeforeReload;
+            WeaponInfo.currentAmmo = WeaponInfo.roundCapacity;
         }
         else {
             WeaponInfo.currentAmmo += WeaponInfo.currentReserveAmmo;
@@ -90,11 +106,16 @@ public class SMG : MonoBehaviour, IWeapon
 
     }
 
+    void OnDrawGizmosSelected(){
+        Gizmos.DrawWireSphere(muzzleTipCheck.transform.position, 0.25f);
+        Debug.DrawLine(rayCastStartPoint.transform.position, rayCastEndPoint.transform.position, Color.red);
+    }
 
     public void HandlePrimaryAttackInput()
     {
-        if(!HasAmmo() || WeaponInfo.isReloading || WeaponInfo.isFiring)
-        return;
+        //if(ObstructionChecker.CheckMuzzleEnvironmentOverlap(muzzleTipCheck, environmentLayers)) return;
+        if(!HasAmmo() || WeaponInfo.isReloading || WeaponInfo.isFiring) return;
+        if(ObstructionChecker.CheckWeaponObstructionOverlap(rayCastStartPoint.transform, rayCastEndPoint.transform, environmentLayers, enemyLayer)) return;  
         
         WeaponInfo.isFiring = true;
         _animator.SetBool("isFiring", true);
@@ -107,7 +128,7 @@ public class SMG : MonoBehaviour, IWeapon
 
     public void HandleReloadStart(){
 
-        if(WeaponInfo.currentReserveAmmo == 0 || WeaponInfo.currentAmmo == WeaponInfo.ammoInClip || WeaponInfo.isReloading) 
+        if(WeaponInfo.currentReserveAmmo == 0 || WeaponInfo.currentAmmo == WeaponInfo.roundCapacity || WeaponInfo.isReloading) 
         return;
 
         WeaponInfo.isFiring = false;        
@@ -121,6 +142,16 @@ public class SMG : MonoBehaviour, IWeapon
     }
 
     public void HandleFiringAnimationEnd(){
-        //
+        //no op
+    }
+
+    public void ResetWeaponState(){
+        WeaponInfo.isFiring = false;
+        WeaponInfo.isReloading = false;
+        _animator.SetBool("isFiring", false);
+        _animator.ResetTrigger("ReloadTrigger");
+        //_animator.Play("Idle");
+        _animator.SetTrigger("WeaponSwitchTrigger");
+        GetComponent<SpriteRenderer>().sprite = WeaponInfo.sprite;
     }
 }

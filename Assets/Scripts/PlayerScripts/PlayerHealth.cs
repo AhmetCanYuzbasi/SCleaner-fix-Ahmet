@@ -5,37 +5,28 @@ using UnityEngine.InputSystem;
 
 public class PlayerHealth : MonoBehaviour, IDamageable, IHealth, ISetup
 {
-    public UnitInfoSO playerInfo;
-
-    //Event for invoking PlayerInvulnTimer script for i-frames
-    //when player takes damage
+    public UnitInfoSO UnitInfo{get;set;}    
     public delegate IEnumerator OnPlayerDamaged(UnitInfoSO info);
     public static OnPlayerDamaged onPlayerDamaged;
-
-    //Event for invoking SpriteBlink script for sprite blinking during i-frames
-    //when player takes damage (referred to as player being hit)
     
-    public delegate IEnumerator OnPlayerHit();
-    public static OnPlayerHit onPlayerHit;
-
-
-    //Event for invoking player death related scripts like animations, sounds etc.
-    //when player's health hits 0
-
+    public delegate IEnumerator OnPlayerHitInvulnEventHandler();
+    public static OnPlayerHitInvulnEventHandler onPlayerHitInvuln;
     public delegate void OnPlayerDeath();
     public static OnPlayerDeath onPlayerDeath;
 
+    public SpriteRenderer spriteRenderer;
+
     void OnEnable(){
-        PlayerHitbox.onPlayerHit += TakeDamage;   
+        PlayerHitbox.onPlayerHitTakeDamage += TakeDamage;   
     }
 
     void OnDisable(){
-        PlayerHitbox.onPlayerHit -= TakeDamage;
+        PlayerHitbox.onPlayerHitTakeDamage -= TakeDamage;
     }
 
 
     public void Init(UnitInfoSO info){
-        playerInfo = info;
+        UnitInfo = info;
     }
 
     public void TakeDamage(IEnemy attacker){
@@ -48,16 +39,19 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealth, ISetup
 
     public void TakeDamage(int amount){
 
-        if (playerInfo.isInvuln) return;
+        if (UnitInfo.isInvuln) return;
+        if (!UnitInfo.isAlive) return;
 
-        playerInfo.health -= 5;
-        if (playerInfo.health <= 0){
-            playerInfo.isAlive = false;
+        UnitInfo.health -= amount;
+        if (UnitInfo.health <= 0){
+            UnitInfo.isAlive = false;
+            PlayPlayerSounds.PlayAudio(UnitInfo.OnDefeatSFX);
+            spriteRenderer.sprite = UnitInfo.DefeatSprite;
             onPlayerDeath?.Invoke();
             return;
         }
-        onPlayerHit?.Invoke();
-        StartCoroutine(onPlayerDamaged?.Invoke(playerInfo));
-        StartCoroutine(onPlayerHit?.Invoke());
+        PlayPlayerSounds.PlayAudio(UnitInfo.OnHitSFX);
+        StartCoroutine(onPlayerDamaged?.Invoke(UnitInfo));
+        StartCoroutine(onPlayerHitInvuln?.Invoke());
     }
 }
